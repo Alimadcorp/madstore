@@ -1,0 +1,17 @@
+{
+  "name": "madstore",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "firebase-admin": "^14.5.0",
+    "ws": "^8.22.0"
+  }
+}

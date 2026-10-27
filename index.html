@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MadStore Control Panel</title>
+    <style>
+        :root {
+            --bg: #0f1115;
+            --panel: #171a21;
+            --panel-2: #1d212b;
+            --border: #2a2f3c;
+            --text: #e6e8ee;
+            --muted: #8b93a7;
+            --accent: #6c8cff;
+            --ok: #3ecf8e;
+            --err: #ff6b6b;
+            --str: #9ece6a;
+            --num: #ff9e64;
+            --bool: #bb9af7;
+            --nul: #7a8194;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        header span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(340px, 460px) 1fr;
+            gap: 16px;
+            padding: 16px 20px;
+            align-items: start;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        .card h2 {
+            margin: 0 0 10px;
+            font-size: 12px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 10px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 3px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            background: var(--panel-2);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 7px 9px;
+            font: 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 1px solid var(--accent);
+            border-color: var(--accent);
+        }
+
+        textarea {
+            height: 90px;
+            resize: vertical;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: var(--accent);
+            color: #fff;
+            border: 0;
+            border-radius: 6px;
+            padding: 7px 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button.secondary {
+            background: var(--panel-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        button.danger {
+            background: #c94c4c;
+        }
+
+        button:hover {
+            filter: brightness(1.12);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .output {
+            position: sticky;
+            top: 16px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 32px);
+        }
+
+        .status {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            color: var(--ok);
+            word-break: break-word;
+        }
+
+        .status.error {
+            color: var(--err);
+        }
+
+        .tree {
+            padding: 12px 14px;
+            overflow: auto;
+            font: 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            border-radius: 0 0 10px 10px;
+            min-height: 200px;
+        }
+
+        .tree details {
+            margin-left: 4px;
+        }
+
+        .tree details>details,
+        .tree details>.kv {
+            margin-left: 16px;
+        }
+
+        .tree summary {
+            cursor: pointer;
+            padding: 1px 0;
+            list-style-position: outside;
+        }
+
+        .tree summary:hover {
+            background: rgba(255, 255, 255, .04);
+        }
+
+        .kv {
+            padding: 1px 0;
+            word-break: break-word;
+        }
+
+        .k {
+            color: #7fb2ff;
+        }
+
+        .sep {
+            color: var(--muted);
+        }
+
+        .meta {
+            color: var(--muted);
+        }
+
+        .v.string {
+            color: var(--str);
+        }
+
+        .v.number {
+            color: var(--num);
+        }
+
+        .v.boolean {
+            color: var(--bool);
+        }
+
+        .v.null {
+            color: var(--nul);
+            font-style: italic;
+        }
+
+        .placeholder {
+            color: var(--muted);
+        }
+
+        @keyframes flash {
+            0% {
+                background: rgba(108, 140, 255, .35);
+                box-shadow: inset 0 0 0 2px var(--accent);
+            }
+
+            100% {
+                background: transparent;
+                box-shadow: inset 0 0 0 0 transparent;
+            }
+        }
+
+        .flash {
+            animation: flash .9s ease-out;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .output {
+                position: static;
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>MadStore</h1>
+        <span>Database client</span>
+    </header>
+
+    <div class="layout">
+        <div class="controls">
+            <section class="card">
+                <h2>1. Create key</h2>
+                <div class="grid">
+                    <div><label for="c-key">Key name</label><input type="text" id="c-key" placeholder="my_storage_key"
+                            autocomplete="off"></div>
+                    <div><label for="c-master">Master password</label><input type="password" id="c-master"
+                            placeholder="Required" autocomplete="new-password"></div>
+                    <div><label for="c-read">Read password</label><input type="password" id="c-read"
+                            placeholder="Blank = public" autocomplete="new-password"></div>
+                    <div><label for="c-write">Write password</label><input type="password" id="c-write"
+                            placeholder="Blank = public" autocomplete="new-password"></div>
+                    <div><label for="c-depth">Max depth</label><input type="number" id="c-depth" value="5" min="1"
+                            max="20"></div>
+                </div>
+                <div class="row"><button id="btn-create">Create key</button></div>
+            </section>
+
+            <section class="card">
+                <h2>2. Session</h2>
+                <div class="grid">
+                    <div><label for="s-key">Active key</label><input type="text" id="s-key" placeholder="Key name"
+                            autocomplete="off"></div>
+                    <div>
+                        <label for="s-transport">Transport</label>
+                        <select id="s-transport">
+                            <option value="http">HTTP</option>
+                            <option value="ws">WebSocket (real-time)</option>
+                        </select>
+                    </div>
+                    <div><label for="s-master">Master pass</label><input type="password" id="s-master"
+                            autocomplete="off"></div>
+                    <div><label for="s-read">Read pass</label><input type="password" id="s-read" autocomplete="off">
+                    </div>
+                    <div><label for="s-write">Write pass</label><input type="password" id="s-write" autocomplete="off">
+                    </div>
+                </div>
+                <div class="row"><button id="btn-connect">Connect</button></div>
+            </section>
+
+            <section class="card hidden" id="sec-sub">
+                <h2>Live subscription</h2>
+                <label for="sub-path">Sub-path (subscribing again replaces the previous one)</label>
+                <input type="text" id="sub-path" value="/" autocomplete="off">
+                <div class="row"><button id="btn-subscribe">Subscribe</button></div>
+            </section>
+
+            <section class="card hidden" id="sec-ops">
+                <h2>3. Operations</h2>
+                <div class="grid">
+                    <div><label for="op-path">Target path</label><input type="text" id="op-path" value="/"
+                            autocomplete="off"></div>
+                    <div><label for="op-ts">Timestamp (ts)</label><input type="number" id="op-ts"
+                            placeholder="Optional"></div>
+                    <div class="full"><label for="op-value">Data payload (JSON / string)</label><textarea id="op-value"
+                            placeholder='{"foo": "bar"}'></textarea></div>
+                </div>
+                <div class="row">
+                    <button class="secondary" data-op="get">GET</button>
+                    <button class="secondary" data-op="set">SET</button>
+                    <button class="secondary" data-op="upsert">UPSERT</button>
+                    <button class="danger" data-op="delete">DELETE</button>
+                </div>
+            </section>
+
+            <section class="card hidden" id="sec-passwords">
+                <h2>4. Change passwords (master required)</h2>
+                <div class="grid">
+                    <div><label for="p-new-master">New master</label><input type="password" id="p-new-master"
+                            placeholder="Unchanged if blank" autocomplete="new-password"></div>
+                    <div><label for="p-new-read">New read</label><input type="password" id="p-new-read"
+                            placeholder="Blank = public" autocomplete="new-password"></div>
+                    <div><label for="p-new-write">New write</label><input type="password" id="p-new-write"
+                            placeholder="Blank = public" autocomplete="new-password"></div>
+                </div>
+                <div class="row"><button id="btn-passwords">Update passwords</button></div>
+            </section>
+        </div>
+
+        <section class="output">
+            <div id="status-log" class="status">Ready.</div>
+            <div id="data-output" class="tree"><span class="placeholder">No data received yet.</span></div>
+        </section>
+    </div>
+
+    <script>
+        const $ = (id) => document.getElementById(id);
+        const httpBase = window.location.origin;
+        const openState = new Map();
+        let ws = null;
+        let socketEnabled = true;
+
+        function log(msg, error = false) {
+            const el = $('status-log');
+            el.classList.toggle('error', error);
+            el.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        }
+
+        function node(tag, className, text) {
+            const el = document.createElement(tag);
+            if (className) el.className = className;
+            if (text !== undefined) el.textContent = text;
+            return el;
+        }
+
+        function primitiveClass(value) {
+            if (value === null) return 'null';
+            return typeof value;
+        }
+
+        function buildNode(key, value, path, depth) {
+            if (value === null || typeof value !== 'object') {
+                const row = node('div', 'kv');
+                const shown = typeof value === 'string' ? JSON.stringify(value) : String(value);
+                row.append(node('span', 'k', key), node('span', 'sep', ': '), node('span', `v ${primitiveClass(value)}`, shown));
+                return row;
+            }
+
+            const entries = Object.entries(value);
+            const details = document.createElement('details');
+            details.open = openState.has(path) ? openState.get(path) : depth === 0;
+            const summary = document.createElement('summary');
+            summary.append(node('span', 'k', key), node('span', 'meta', Array.isArray(value) ? ` [${entries.length}]` : ` {${entries.length}}`));
+            details.append(summary);
+            details.addEventListener('toggle', () => openState.set(path, details.open));
+            for (const [k, v] of entries) details.append(buildNode(k, v, `${path}/${k}`, depth + 1));
+            return details;
+        }
+
+        function flash(el) {
+            el.classList.remove('flash');
+            void el.offsetWidth;
+            el.classList.add('flash');
+        }
+
+        function displayData(data) {
+            const out = $('data-output');
+            out.replaceChildren();
+            if (data !== null && typeof data === 'object') {
+                out.append(buildNode('response', data, 'root', 0));
+            } else {
+                out.append(node('span', `v ${primitiveClass(data)}`, String(data)));
+            }
+            flash(out);
+        }
+
+        function getSessionData() {
+            return {
+                key: $('s-key').value.trim(),
+                master: $('s-master').value,
+                read: $('s-read').value,
+                write: $('s-write').value,
+                transport: $('s-transport').value
+            };
+        }
+
+        function updateSections(connected) {
+            const ws_mode = getSessionData().transport === 'ws';
+            $('sec-ops').classList.toggle('hidden', !connected);
+            $('sec-passwords').classList.toggle('hidden', !connected);
+            $('sec-sub').classList.toggle('hidden', !(connected && ws_mode));
+        }
+
+        async function createKey() {
+            const key = $('c-key').value.trim();
+            const master = $('c-master').value;
+            if (!key || !master) return log('Key name and master password are required.', true);
+
+            try {
+                const res = await fetch(`${httpBase}/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        key,
+                        master,
+                        read: $('c-read').value,
+                        write: $('c-write').value,
+                        depth: $('c-depth').value,
+                        ts: Date.now()
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to create key');
+                log('Key created successfully.');
+                displayData(data);
+            } catch (e) {
+                log(`Create error: ${e.message}`, true);
+            }
+        }
+
+        async function executeRequest(type, body) {
+            const session = getSessionData();
+            const tsVal = $('op-ts').value;
+            const ts = tsVal ? parseInt(tsVal, 10) : Date.now();
+            const payload = { ...body, ts };
+
+            if (session.transport === 'ws') {
+                if (!ws || ws.readyState !== WebSocket.OPEN) throw new Error('WebSocket connection is not open.');
+                ws.send(JSON.stringify({ type, ts, body: payload }));
+                return undefined;
+            }
+
+            const res = await fetch(`${httpBase}/${type}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'HTTP operation error');
+            return data;
+        }
+
+        function subscribe() {
+            if (!ws || ws.readyState !== WebSocket.OPEN) return log('WebSocket is not connected.', true);
+            const s = getSessionData();
+            ws.send(JSON.stringify({
+                type: 'subscribe',
+                ts: Date.now(),
+                body: {
+                    keys: [{ key: s.key, master: s.master, read: s.read, path: $('sub-path').value || '/' }]
+                }
+            }));
+        }
+
+        function initWebSocket() {
+            if (ws && ws.readyState <= WebSocket.OPEN) {
+                if (ws.readyState === WebSocket.OPEN) subscribe();
+                return;
+            }
+
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${window.location.host}/socket`);
+
+            ws.onopen = () => {
+                log('WebSocket connected. Subscribing...');
+                subscribe();
+            };
+
+            ws.onmessage = (event) => {
+                let msg;
+                try { msg = JSON.parse(event.data); } catch (e) { return log('Received a non-JSON frame.', true); }
+                const label = msg.type || msg.op || 'frame';
+                log(`WebSocket ${label} received.`, Boolean(msg.error));
+                displayData(msg);
+            };
+
+            ws.onerror = () => log('WebSocket error occurred.', true);
+            ws.onclose = () => log('WebSocket disconnected.');
+        }
+
+        async function login() {
+            const session = getSessionData();
+            if (!session.key) return log('Key name is required.', true);
+
+            try {
+                if (session.transport === 'ws') {
+                    initWebSocket();
+                } else {
+                    const data = await executeRequest('get', {
+                        key: session.key,
+                        master: session.master,
+                        read: session.read,
+                        path: '/'
+                    });
+                    log('HTTP login / read verified.');
+                    displayData(data);
+                }
+                updateSections(true);
+            } catch (e) {
+                log(`Login error: ${e.message}`, true);
+            }
+        }
+
+        function switchTransport() {
+            const session = getSessionData();
+            if (session.transport === 'ws') {
+                if (!$('sec-ops').classList.contains('hidden')) initWebSocket();
+            } else if (ws) {
+                ws.close();
+                ws = null;
+                log('Switched to HTTP.');
+            }
+            updateSections(!$('sec-ops').classList.contains('hidden'));
+        }
+
+        async function performOp(opType) {
+            const session = getSessionData();
+            const body = {
+                key: session.key,
+                path: $('op-path').value || '/',
+                master: session.master,
+                read: session.read,
+                write: session.write
+            };
+
+            if (opType !== 'get' && opType !== 'delete') {
+                const raw = $('op-value').value;
+                try { body.value = JSON.parse(raw); } catch (e) { body.value = raw; }
+            }
+
+            try {
+                const data = await executeRequest(opType, body);
+                if (data) {
+                    log(`Operation ${opType.toUpperCase()} success.`);
+                    displayData(data);
+                }
+            } catch (e) {
+                log(`Operation error: ${e.message}`, true);
+            }
+        }
+
+        async function changePasswords() {
+            const session = getSessionData();
+            const body = {
+                key: session.key,
+                master: session.master,
+                new_master: $('p-new-master').value || undefined,
+                new_read: $('p-new-read').value,
+                new_write: $('p-new-write').value
+            };
+
+            try {
+                const data = await executeRequest('password', body);
+                if (data) {
+                    log('Passwords updated successfully.');
+                    displayData(data);
+                }
+            } catch (e) {
+                log(`Password update error: ${e.message}`, true);
+            }
+        }
+
+        $('btn-create').addEventListener('click', createKey);
+        $('btn-connect').addEventListener('click', login);
+        $('btn-subscribe').addEventListener('click', subscribe);
+        $('btn-passwords').addEventListener('click', changePasswords);
+        $('s-transport').addEventListener('change', switchTransport);
+        document.querySelectorAll('[data-op]').forEach((b) => b.addEventListener('click', () => performOp(b.dataset.op)));
+
+        fetch(`${httpBase}/config`)
+            .then((r) => r.json())
+            .then((cfg) => {
+                socketEnabled = Boolean(cfg.socket);
+                if (!socketEnabled) {
+                    $('s-transport').querySelector('option[value="ws"]').remove();
+                    $('s-transport').value = 'http';
+                }
+            })
+            .catch(() => { });
+    </script>
+</body>
+
+</html>
