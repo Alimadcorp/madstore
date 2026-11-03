@@ -22,9 +22,7 @@
             --nul: #7a8194;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -41,15 +39,8 @@
             gap: 10px;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 18px;
-        }
-
-        header span {
-            color: var(--muted);
-            font-size: 12px;
-        }
+        header h1 { margin: 0; font-size: 18px; }
+        header span { color: var(--muted); font-size: 12px; }
 
         .layout {
             display: grid;
@@ -59,11 +50,7 @@
             align-items: start;
         }
 
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .controls { display: flex; flex-direction: column; gap: 12px; }
 
         .card {
             background: var(--panel);
@@ -80,26 +67,22 @@
             color: var(--muted);
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px 10px;
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; }
+        .full { grid-column: 1 / -1; }
+
+        label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+
+        label.check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 4px 0 0;
+            cursor: pointer;
         }
 
-        .full {
-            grid-column: 1 / -1;
-        }
+        label.check input { width: auto; margin: 0; }
 
-        label {
-            display: block;
-            font-size: 12px;
-            color: var(--muted);
-            margin-bottom: 3px;
-        }
-
-        input,
-        select,
-        textarea {
+        input, select, textarea {
             width: 100%;
             background: var(--panel-2);
             color: var(--text);
@@ -109,24 +92,16 @@
             font: 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         }
 
-        input:focus,
-        select:focus,
-        textarea:focus {
+        input:focus, select:focus, textarea:focus {
             outline: 1px solid var(--accent);
             border-color: var(--accent);
         }
 
-        textarea {
-            height: 90px;
-            resize: vertical;
-        }
+        input:disabled { opacity: .45; }
 
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
+        textarea { height: 90px; resize: vertical; }
+
+        .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 
         button {
             background: var(--accent);
@@ -138,27 +113,13 @@
             cursor: pointer;
         }
 
-        button.secondary {
-            background: var(--panel-2);
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
+        button.secondary { background: var(--panel-2); border: 1px solid var(--border); color: var(--text); }
+        button.danger { background: #c94c4c; }
+        button:hover { filter: brightness(1.12); }
+        button:active { transform: translateY(1px); }
+        button:disabled { opacity: .5; cursor: default; }
 
-        button.danger {
-            background: #c94c4c;
-        }
-
-        button:hover {
-            filter: brightness(1.12);
-        }
-
-        button:active {
-            transform: translateY(1px);
-        }
-
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         .output {
             position: sticky;
@@ -179,9 +140,7 @@
             word-break: break-word;
         }
 
-        .status.error {
-            color: var(--err);
-        }
+        .status.error { color: var(--err); }
 
         .tree {
             padding: 12px 14px;
@@ -191,88 +150,31 @@
             min-height: 200px;
         }
 
-        .tree details {
-            margin-left: 4px;
-        }
+        .tree details { margin-left: 4px; }
+        .tree details>details, .tree details>.kv { margin-left: 16px; }
+        .tree summary { cursor: pointer; padding: 1px 0; list-style-position: outside; }
+        .tree summary:hover { background: rgba(255, 255, 255, .04); }
 
-        .tree details>details,
-        .tree details>.kv {
-            margin-left: 16px;
-        }
-
-        .tree summary {
-            cursor: pointer;
-            padding: 1px 0;
-            list-style-position: outside;
-        }
-
-        .tree summary:hover {
-            background: rgba(255, 255, 255, .04);
-        }
-
-        .kv {
-            padding: 1px 0;
-            word-break: break-word;
-        }
-
-        .k {
-            color: #7fb2ff;
-        }
-
-        .sep {
-            color: var(--muted);
-        }
-
-        .meta {
-            color: var(--muted);
-        }
-
-        .v.string {
-            color: var(--str);
-        }
-
-        .v.number {
-            color: var(--num);
-        }
-
-        .v.boolean {
-            color: var(--bool);
-        }
-
-        .v.null {
-            color: var(--nul);
-            font-style: italic;
-        }
-
-        .placeholder {
-            color: var(--muted);
-        }
+        .kv { padding: 1px 0; word-break: break-word; }
+        .k { color: #7fb2ff; }
+        .sep { color: var(--muted); }
+        .meta { color: var(--muted); }
+        .v.string { color: var(--str); }
+        .v.number { color: var(--num); }
+        .v.boolean { color: var(--bool); }
+        .v.null { color: var(--nul); font-style: italic; }
+        .placeholder { color: var(--muted); }
 
         @keyframes flash {
-            0% {
-                background: rgba(108, 140, 255, .35);
-                box-shadow: inset 0 0 0 2px var(--accent);
-            }
-
-            100% {
-                background: transparent;
-                box-shadow: inset 0 0 0 0 transparent;
-            }
+            0% { background: rgba(108, 140, 255, .35); box-shadow: inset 0 0 0 2px var(--accent); }
+            100% { background: transparent; box-shadow: inset 0 0 0 0 transparent; }
         }
 
-        .flash {
-            animation: flash .9s ease-out;
-        }
+        .flash { animation: flash .9s ease-out; }
 
         @media (max-width: 900px) {
-            .layout {
-                grid-template-columns: 1fr;
-            }
-
-            .output {
-                position: static;
-                max-height: none;
-            }
+            .layout { grid-template-columns: 1fr; }
+            .output { position: static; max-height: none; }
         }
     </style>
 </head>
@@ -337,7 +239,7 @@
                     <div><label for="op-path">Target path</label><input type="text" id="op-path" value="/"
                             autocomplete="off"></div>
                     <div><label for="op-ts">Timestamp (ts)</label><input type="number" id="op-ts"
-                            placeholder="Optional"></div>
+                            placeholder="Blank = now"></div>
                     <div class="full"><label for="op-value">Data payload (JSON / string)</label><textarea id="op-value"
                             placeholder='{"foo": "bar"}'></textarea></div>
                 </div>
@@ -352,12 +254,20 @@
             <section class="card hidden" id="sec-passwords">
                 <h2>4. Change passwords (master required)</h2>
                 <div class="grid">
-                    <div><label for="p-new-master">New master</label><input type="password" id="p-new-master"
-                            placeholder="Unchanged if blank" autocomplete="new-password"></div>
-                    <div><label for="p-new-read">New read</label><input type="password" id="p-new-read"
-                            placeholder="Blank = public" autocomplete="new-password"></div>
-                    <div><label for="p-new-write">New write</label><input type="password" id="p-new-write"
-                            placeholder="Blank = public" autocomplete="new-password"></div>
+                    <div class="full"><label for="p-new-master">New master</label><input type="password"
+                            id="p-new-master" placeholder="Blank = unchanged" autocomplete="new-password"></div>
+                    <div>
+                        <label for="p-new-read">New read</label>
+                        <input type="password" id="p-new-read" placeholder="Blank = unchanged"
+                            autocomplete="new-password">
+                        <label class="check"><input type="checkbox" id="p-public-read"> Make public</label>
+                    </div>
+                    <div>
+                        <label for="p-new-write">New write</label>
+                        <input type="password" id="p-new-write" placeholder="Blank = unchanged"
+                            autocomplete="new-password">
+                        <label class="check"><input type="checkbox" id="p-public-write"> Make public</label>
+                    </div>
                 </div>
                 <div class="row"><button id="btn-passwords">Update passwords</button></div>
             </section>
@@ -374,7 +284,9 @@
         const httpBase = window.location.origin;
         const openState = new Map();
         let ws = null;
+        let connected = false;
         let socketEnabled = true;
+        let pendingPasswords = null;
 
         function log(msg, error = false) {
             const el = $('status-log');
@@ -404,7 +316,7 @@
 
             const entries = Object.entries(value);
             const details = document.createElement('details');
-            details.open = openState.has(path) ? openState.get(path) : depth === 0;
+            details.open = openState.has(path) ? openState.get(path) : depth < 2;
             const summary = document.createElement('summary');
             summary.append(node('span', 'k', key), node('span', 'meta', Array.isArray(value) ? ` [${entries.length}]` : ` {${entries.length}}`));
             details.append(summary);
@@ -440,11 +352,29 @@
             };
         }
 
-        function updateSections(connected) {
-            const ws_mode = getSessionData().transport === 'ws';
+        // Only send secrets that were actually typed.
+        function secrets(session) {
+            const out = {};
+            if (session.master) out.master = session.master;
+            if (session.read) out.read = session.read;
+            if (session.write) out.write = session.write;
+            return out;
+        }
+
+        function updateSections() {
+            const wsMode = getSessionData().transport === 'ws';
             $('sec-ops').classList.toggle('hidden', !connected);
             $('sec-passwords').classList.toggle('hidden', !connected);
-            $('sec-sub').classList.toggle('hidden', !(connected && ws_mode));
+            $('sec-sub').classList.toggle('hidden', !(connected && wsMode));
+        }
+
+        function setConnected(value) {
+            connected = value;
+            updateSections();
+        }
+
+        async function readJson(res) {
+            try { return await res.json(); } catch (e) { return {}; }
         }
 
         async function createKey() {
@@ -465,9 +395,14 @@
                         ts: Date.now()
                     })
                 });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'Failed to create key');
-                log('Key created successfully.');
+                const data = await readJson(res);
+                if (!res.ok) throw new Error(data.error || `Failed to create key (HTTP ${res.status})`);
+                // Fill the session so the new key can be used right away.
+                $('s-key').value = key;
+                $('s-master').value = master;
+                $('s-read').value = $('c-read').value;
+                $('s-write').value = $('c-write').value;
+                log('Key created successfully. Session fields filled in; click Connect.');
                 displayData(data);
             } catch (e) {
                 log(`Create error: ${e.message}`, true);
@@ -483,7 +418,7 @@
             if (session.transport === 'ws') {
                 if (!ws || ws.readyState !== WebSocket.OPEN) throw new Error('WebSocket connection is not open.');
                 ws.send(JSON.stringify({ type, ts, body: payload }));
-                return undefined;
+                return undefined; // the reply arrives through onmessage
             }
 
             const res = await fetch(`${httpBase}/${type}`, {
@@ -491,8 +426,8 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'HTTP operation error');
+            const data = await readJson(res);
+            if (!res.ok) throw new Error(data.error || `HTTP error ${res.status}`);
             return data;
         }
 
@@ -503,83 +438,102 @@
                 type: 'subscribe',
                 ts: Date.now(),
                 body: {
-                    keys: [{ key: s.key, master: s.master, read: s.read, path: $('sub-path').value || '/' }]
+                    keys: [{ key: s.key, path: $('sub-path').value || '/', ...secrets(s) }]
                 }
             }));
         }
 
         function initWebSocket() {
-            if (ws && ws.readyState <= WebSocket.OPEN) {
-                if (ws.readyState === WebSocket.OPEN) subscribe();
-                return;
-            }
+            if (ws && ws.readyState === WebSocket.OPEN) return subscribe();
+            if (ws && ws.readyState === WebSocket.CONNECTING) return;
 
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            ws = new WebSocket(`${protocol}//${window.location.host}/socket`);
+            const socket = new WebSocket(`${protocol}//${window.location.host}/socket`);
+            ws = socket;
 
-            ws.onopen = () => {
+            socket.onopen = () => {
                 log('WebSocket connected. Subscribing...');
                 subscribe();
             };
 
-            ws.onmessage = (event) => {
+            socket.onmessage = (event) => {
+                if (ws !== socket) return;
                 let msg;
                 try { msg = JSON.parse(event.data); } catch (e) { return log('Received a non-JSON frame.', true); }
+
+                if (msg.op === 'subscribe') {
+                    const failed = (msg.results || []).filter((r) => r.error);
+                    if (msg.error || failed.length) {
+                        setConnected(false);
+                        log(`Subscribe failed: ${msg.error || failed.map((r) => r.error).join(', ')}`, true);
+                    } else {
+                        setConnected(true);
+                        log('Subscribed. Live updates will appear below.');
+                    }
+                    return displayData(msg);
+                }
+
+                if (msg.op === 'password') {
+                    if (msg.status === 200 && pendingPasswords) applyPasswords(pendingPasswords);
+                    pendingPasswords = null;
+                }
+
                 const label = msg.type || msg.op || 'frame';
-                log(`WebSocket ${label} received.`, Boolean(msg.error));
+                log(`WebSocket ${label} received${msg.error ? `: ${msg.error}` : '.'}`, Boolean(msg.error));
                 displayData(msg);
             };
 
-            ws.onerror = () => log('WebSocket error occurred.', true);
-            ws.onclose = () => log('WebSocket disconnected.');
+            socket.onerror = () => { if (ws === socket) log('WebSocket error occurred.', true); };
+            socket.onclose = () => {
+                if (ws !== socket) return;
+                ws = null;
+                setConnected(false);
+                log('WebSocket disconnected. Click Connect to reconnect.', true);
+            };
         }
 
         async function login() {
             const session = getSessionData();
             if (!session.key) return log('Key name is required.', true);
 
+            if (session.transport === 'ws') {
+                initWebSocket(); // connected state is set when the subscribe reply arrives
+                return;
+            }
+
             try {
-                if (session.transport === 'ws') {
-                    initWebSocket();
-                } else {
-                    const data = await executeRequest('get', {
-                        key: session.key,
-                        master: session.master,
-                        read: session.read,
-                        path: '/'
-                    });
-                    log('HTTP login / read verified.');
-                    displayData(data);
-                }
-                updateSections(true);
+                const data = await executeRequest('get', { key: session.key, path: '/', ...secrets(session) });
+                log('HTTP login / read verified.');
+                displayData(data);
+                setConnected(true);
             } catch (e) {
+                setConnected(false);
                 log(`Login error: ${e.message}`, true);
             }
         }
 
         function switchTransport() {
-            const session = getSessionData();
-            if (session.transport === 'ws') {
-                if (!$('sec-ops').classList.contains('hidden')) initWebSocket();
-            } else if (ws) {
-                ws.close();
+            if (ws) {
+                const old = ws;
                 ws = null;
-                log('Switched to HTTP.');
+                old.close();
             }
-            updateSections(!$('sec-ops').classList.contains('hidden'));
+            setConnected(false);
+            log('Transport changed. Click Connect.');
         }
 
         async function performOp(opType) {
             const session = getSessionData();
-            const body = {
-                key: session.key,
-                path: $('op-path').value || '/',
-                master: session.master,
-                read: session.read,
-                write: session.write
-            };
+            const path = $('op-path').value || '/';
 
-            if (opType !== 'get' && opType !== 'delete') {
+            if (opType === 'delete' && path.replace(/\//g, '') === '' &&
+                !confirm(`Delete the entire key "${session.key}" and all its data? This cannot be undone.`)) {
+                return;
+            }
+
+            const body = { key: session.key, path, ...secrets(session) };
+
+            if (opType === 'set' || opType === 'upsert') {
                 const raw = $('op-value').value;
                 try { body.value = JSON.parse(raw); } catch (e) { body.value = raw; }
             }
@@ -595,23 +549,37 @@
             }
         }
 
+        function applyPasswords(p) {
+            if (p.new_master) $('s-master').value = p.new_master;
+            if (p.new_read !== undefined) $('s-read').value = p.new_read;
+            if (p.new_write !== undefined) $('s-write').value = p.new_write;
+            for (const id of ['p-new-master', 'p-new-read', 'p-new-write']) $(id).value = '';
+            $('p-public-read').checked = false;
+            $('p-public-write').checked = false;
+        }
+
         async function changePasswords() {
             const session = getSessionData();
-            const body = {
-                key: session.key,
-                master: session.master,
-                new_master: $('p-new-master').value || undefined,
-                new_read: $('p-new-read').value,
-                new_write: $('p-new-write').value
-            };
+            const change = {};
+            if ($('p-new-master').value) change.new_master = $('p-new-master').value;
+            if ($('p-public-read').checked) change.new_read = '';
+            else if ($('p-new-read').value) change.new_read = $('p-new-read').value;
+            if ($('p-public-write').checked) change.new_write = '';
+            else if ($('p-new-write').value) change.new_write = $('p-new-write').value;
+
+            if (!Object.keys(change).length) return log('Nothing to change.', true);
 
             try {
-                const data = await executeRequest('password', body);
-                if (data) {
+                pendingPasswords = change;
+                const data = await executeRequest('password', { key: session.key, ...secrets(session), ...change });
+                if (data) { // HTTP mode; in WebSocket mode applyPasswords runs when the reply arrives
+                    pendingPasswords = null;
+                    applyPasswords(change);
                     log('Passwords updated successfully.');
                     displayData(data);
                 }
             } catch (e) {
+                pendingPasswords = null;
                 log(`Password update error: ${e.message}`, true);
             }
         }
@@ -621,6 +589,8 @@
         $('btn-subscribe').addEventListener('click', subscribe);
         $('btn-passwords').addEventListener('click', changePasswords);
         $('s-transport').addEventListener('change', switchTransport);
+        $('p-public-read').addEventListener('change', (e) => { $('p-new-read').disabled = e.target.checked; });
+        $('p-public-write').addEventListener('change', (e) => { $('p-new-write').disabled = e.target.checked; });
         document.querySelectorAll('[data-op]').forEach((b) => b.addEventListener('click', () => performOp(b.dataset.op)));
 
         fetch(`${httpBase}/config`)
